@@ -1,0 +1,28 @@
+{
+  "name": "dripkite",
+  "version": "1.0.0",
+  "description": "Dripkite is a web app that links local tailors with customers seeking custom clothing. ",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2005Ashwani/dripkite.git"
+  },
+  "author": "Ashwani Singh, Jatin Kumar Mehta, Pankaj Kumar Ray",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/2005Ashwani/dripkite/issues"
+  },
+  "homepage": "https://github.com/2005Ashwani/dripkite#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "mongoose": "^8.18.1",
+    "nodemon": "^3.1.10"
+  }
+}

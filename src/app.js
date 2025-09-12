@@ -25,4 +25,6 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 
 
+//routes
+
 export {app}

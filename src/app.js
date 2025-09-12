@@ -26,5 +26,12 @@ app.use(cookieParser())
 
 
 //routes
+import signupRoute from "./routes/signup.routes.js"
+import loginRoute from "./routes/signin.routes.js"
+import signoutRoute from "./routes/signout.routes.js"
+
+app.use('/signup',signupRoute)
+app.use('/signinPage',loginRoute)
+app.use('/signoutBtn',signoutRoute)
 
 export {app}

@@ -1,1 +1,1 @@
-export const DB_NAME = "driptekite"
+export const DB_NAME = "dripkite"

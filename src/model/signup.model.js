@@ -5,9 +5,41 @@ import jwt from "jsonwebtoken"
 
 const signUpSchema = mongoose.Schema({
 
-   
-    
-
+    emailId:{
+        type:"String",
+        required:true,
+        unique:true,
+        trim:true,
+        match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "Invalid email format"]
+        
+    },
+    userName:{
+        type:String,
+        required:true,
+        unique:true,
+        trim:true,
+        lowercase:true,
+        index:true
+    },
+    phoneNo:{
+        type:Number,
+        required:true,
+        unique:true,
+        trim:true
+    },
+    password:{
+        type:String,
+        required:true,
+        trim:true,
+    },
+    confirmPassword:{
+        type:String,
+        required:true,
+        trim:true,
+    },
+    refreshToken:{
+        type:String
+    }
 }, { timestamps: true })
 
 
@@ -34,9 +66,8 @@ signUpSchema.methods.generateAccessToken = function () {
 
     return jwt.sign({
         _id: this._id,
-        fullName: this.fullName,
-        email: this.email,
-        userId: this.userId
+        userName: this.userName,
+        emailId: this.emailId,
     },
         process.env.ACCESS_TOKEN_SECRET,
         {

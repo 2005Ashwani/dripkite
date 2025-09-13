@@ -39,6 +39,9 @@ const signUpSchema = mongoose.Schema({
     },
     refreshToken:{
         type:String
+    },
+    otp:{
+        type:String
     }
 }, { timestamps: true })
 

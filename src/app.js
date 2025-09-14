@@ -29,9 +29,12 @@ app.use(cookieParser())
 import signupRoute from "./routes/signup.routes.js"
 import loginRoute from "./routes/signin.routes.js"
 import signoutRoute from "./routes/signout.routes.js"
+import tailorRegistrationRoute from "./routes/tailor.route.js"
 
-app.use('/signup',signupRoute)
-app.use('/signinPage',loginRoute)
-app.use('/signoutBtn',signoutRoute)
+
+app.use('/api/v1/signup',signupRoute)
+app.use('/api/v1/signinPage',loginRoute)
+app.use('/api/v1/signoutBtn',signoutRoute)
+app.use('/api/v1/tailorRegistration',tailorRegistrationRoute)
 
 export {app}

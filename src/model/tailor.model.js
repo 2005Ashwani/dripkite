@@ -1,11 +1,14 @@
-import mongoose, { Schema, Model } from "mongoose";
-import signUp from "./signup.model";
+import mongoose, { Schema,  model } from "mongoose";
+import signUp from "./signup.model.js";
+import sampleCloth from "./sampleCloth.model.js";
+
 
 
 const tailorSchema = new Schema({
     userName: {
         type: Schema.Types.ObjectId,
-        ref: signUp
+        ref: signUp,
+
     },
     emailId: {
         type: Schema.Types.ObjectId,
@@ -29,7 +32,7 @@ const tailorSchema = new Schema({
         required: true,
         trim: true
     },
-    profiePic: {
+    profilePic: {
         type: String,
     },
     aadharNo: {
@@ -43,6 +46,7 @@ const tailorSchema = new Schema({
         enum: ["Male", "Female", "Other"],
         required: true
     },
+
     localAddress: [{
         state: {
             type: String,
@@ -66,33 +70,38 @@ const tailorSchema = new Schema({
             required: true
         }
     }],
-    experience: {
-        type: Number,
-        required: true
-    },
-    shopName: {
-        type: String,
-    },
-    shopRegistrationNo: {
+    shopLocation: {
         type: String,
         required: function () {
-            // Only required if shopName is provided
-            return this.shopName && this.shopName.trim().length > 0;
+            return this.localAddress && this.localAddress.length > 0
         }
     },
-   sellRawCloth:{
+    experience: {
+    type: Number,
+    required: true
+},
+    shopName: {
+    type: String,
+},
+    shopRegistrationNo: {
+    type: String,
+    required: function () {
+        // Only required if shopName is provided
+        return this.shopName && this.shopName.trim().length > 0;
+    }
+},
+    sellRawCloth: {
     type:Boolean,
-    required:true
-   },
-   sampleCloth:{
-    ref:Schema.Types.ObjectId,
-    ref:sameCloth
-
-   }
+    // required: true
+},
+    sampleCloth: {
+    type: Schema.Types.ObjectId,
+    ref: sampleCloth
+}
 
 }, { timestamps: true })
 
 
-const tailor = Model("tailor", tailorSchema)
+const tailor = model("tailor", tailorSchema)
 
 export default tailor

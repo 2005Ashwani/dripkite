@@ -19,6 +19,8 @@ const verifyJWT = asyncHandler(async(req,_,next)=>{
 
      
      const user = await signUp.findById(decodedToken?._id).select("-password -refreshToken")
+
+     console.log(user._id);
      
      if(!user){
       throw new apiError(401, "Invalid Token")

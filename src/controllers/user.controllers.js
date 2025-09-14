@@ -138,7 +138,7 @@ const registerUser = asyncHandler(async function (req, res, next) {
 
 
 // Register Customer
-const registerCustomers = async (req, res) => {
+const registerCustomers =asyncHandler( async (req, res) => {
     const { dob, gender } = req.body;
     try {
 
@@ -173,6 +173,6 @@ const registerCustomers = async (req, res) => {
             .status(500)
             .json(new apiError(500, "Something went wrong while registering customer", error.message));
     }
-}
+})
 
 export { registerUser, loginUser, signoutUser, registerCustomers }

@@ -299,4 +299,4 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
 
 })
 export { registerUser, loginUser, signoutUser, registerTailor, refreshAccessToken }
->>>>>>> 0dae4880c3f0b18df027126d080967c44e2dc571
+

@@ -9,11 +9,10 @@ const app = express()
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
-<<<<<<< HEAD
+
     credentials: true
-=======
-    credentials: true,
->>>>>>> 0dae4880c3f0b18df027126d080967c44e2dc571
+
+
 }))
 
 

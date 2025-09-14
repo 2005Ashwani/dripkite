@@ -137,7 +137,7 @@ const registerUser = asyncHandler(async function (req, res, next) {
 });
 
 
-// Register Customer
+// Register Customer Ashwani
 const registerCustomers =asyncHandler( async (req, res) => {
     const { dob, gender } = req.body;
     try {

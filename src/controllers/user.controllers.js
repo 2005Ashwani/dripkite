@@ -200,4 +200,54 @@ const registerTailor = asyncHandler(async (req, res, next) => {
 
 
 })
-export { registerUser, loginUser, signoutUser, registerTailor }
+
+
+const refreshAccessToken = asyncHandler(async (req, res, next) => {
+    const incomingRefreshToken = await req.cookies.refreshToken || req.body.refreshToken;
+
+    if (!incomingRefreshToken) {
+        throw new apiError(401, "Unauthorized Access!");
+    }
+
+
+    try {
+        const decodedToken =  jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+        
+        
+        const user = await signUp.findById(decodedToken._id)
+        
+        if (!user) {
+            throw new apiError(401, "Invalid Refresh Token")
+        }
+        
+        if (incomingRefreshToken != user?.refreshToken) {
+            throw new apiError(401, "Refresh token is expired or used")
+        }
+        
+
+        const { accessToken, newRefreshToken } = await generateRefreshTokenAndAccessToken(user._id)
+        
+
+
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+        return res
+        .status(200)
+        .cookie("refreshToken", newRefreshToken, options)
+        .cookie("accessToken", accessToken, options)
+        .json(new apiResponse(
+                200,
+                { accessToken, refreshToken: newRefreshToken },
+                "Access token refreshed"
+            )
+        )
+    } catch (error) {
+
+        throw new apiError(401, error?.message || "Invalid refresh Token")
+    }
+
+
+})
+export { registerUser, loginUser, signoutUser, registerTailor, refreshAccessToken }

@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 import uploadOnCloudinary from "../utils/cloudinary.js";
 import tailor from "../model/tailor.model.js";
+import {pigeonBoyModel} from "../model/pigeonBoy.model.js"
 
 
 
@@ -249,6 +250,58 @@ const registerTailor = asyncHandler(async (req, res, next) => {
 
 })
 
+const pigeonBoy = asyncHandler(async (req, res, next) => {
+
+    const { firstName, middleName, lastName, profilePic, aadharNo, gender, localAddress, vehicleNumber,
+       licenseNo, insurance, insuranceNo
+    } = req.body
+
+    const avatarInfo = await uploadOnCloudinary(req.file.path);
+
+    let localAddressJson = []
+    const avatarUrl = avatarInfo?.url;
+    if (req.body.localAddress) {
+        if (typeof req.body.localAddress === "string") {
+            try {
+                localAddressJson = JSON.parse(req.body.localAddress);
+            } catch (e) {
+                console.error("Invalid localAddress JSON:", e);
+            }
+        } else {
+            localAddressJson = req.body.localAddress;
+        }
+    }
+
+
+
+
+    if ([firstName, lastName, gender,aadharNo, vehicleNumber,insurance, localAddress, licenseNo].some((elem) => elem == "")) {
+        throw new apiError(400, "Fields are must")
+    }
+
+
+
+    const pigeonBoyReg = await pigeonBoyModel.create({
+        firstName,
+        middleName,
+        lastName,
+        gender,
+        profilePic: avatarUrl,
+        aadharNo,
+        vehicleNumber,
+        localAddress: localAddressJson,
+        licenseNo,
+        insurance,
+        insuranceNo,
+    })
+
+
+    return res.status(201).json(
+        new apiResponse(201, "Pegion Boy registered Successfully!")
+    )
+
+})
+
 
 const refreshAccessToken = asyncHandler(async (req, res, next) => {
     const incomingRefreshToken = await req.cookies.refreshToken || req.body.refreshToken;
@@ -259,22 +312,22 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
 
 
     try {
-        const decodedToken =  jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
-        
-        
+        const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+
         const user = await signUp.findById(decodedToken._id)
-        
+
         if (!user) {
             throw new apiError(401, "Invalid Refresh Token")
         }
-        
+
         if (incomingRefreshToken != user?.refreshToken) {
             throw new apiError(401, "Refresh token is expired or used")
         }
-        
+
 
         const { accessToken, refreshToken } = await generateRefreshTokenAndAccessToken(user._id)
-        
+
 
 
         const options = {
@@ -282,15 +335,15 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
             secure: true
         }
         return res
-        .status(200)
-        .cookie("refreshToken", refreshToken, options)
-        .cookie("accessToken", accessToken, options)
-        .json(new apiResponse(
+            .status(200)
+            .cookie("refreshToken", refreshToken, options)
+            .cookie("accessToken", accessToken, options)
+            .json(new apiResponse(
                 200,
                 { accessToken, refreshToken: refreshToken },
                 "Access token refreshed"
             )
-        )
+            )
     } catch (error) {
 
         throw new apiError(401, error?.message || "Invalid refresh Token")
@@ -298,5 +351,5 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
 
 
 })
-export { registerUser, loginUser, signoutUser, registerTailor, refreshAccessToken }
 
+export { registerUser, loginUser, signoutUser, registerTailor, refreshAccessToken, pigeonBoy }

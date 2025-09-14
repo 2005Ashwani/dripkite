@@ -5,8 +5,6 @@ import cors from "cors"
 
 const app = express()
 
-
-
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
 
@@ -14,8 +12,6 @@ app.use(cors({
 
 
 }))
-
-
 
 dotenv.config({
     path:"./.env"
@@ -32,6 +28,7 @@ import loginRoute from "./routes/signin.routes.js"
 import signoutRoute from "./routes/signout.routes.js"
 import tailorRegistrationRoute from "./routes/tailor.route.js"
 import refreshAccecssTokenRoute from "./routes/refreshAccessToken.routes.js"
+import pigeonBoyRoute from "./routes/pigeonBoy.routes.js"
 
 
 app.use('/api/v1/signup',signupRoute)
@@ -39,5 +36,6 @@ app.use('/api/v1/signinPage',loginRoute)
 app.use('/api/v1/signoutBtn',signoutRoute)
 app.use('/api/v1/tailorRegistration',tailorRegistrationRoute)
 app.use('/api/v1/refreshTokens',refreshAccecssTokenRoute);
+app.use('/api/v1/pigeonBoyReg',pigeonBoyRoute);
 
 export {app}

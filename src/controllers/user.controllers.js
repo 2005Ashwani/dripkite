@@ -6,6 +6,7 @@ import apiResponse from "../utils/apiResponse.js"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 import uploadOnCloudinary from "../utils/cloudinary.js";
+import tailor from "../model/tailor.model.js";
 
 
 
@@ -96,6 +97,7 @@ const signoutUser = asyncHandler(async function (req, res, next) {
         .json(new apiResponse(200, {}, "User logged Out"))
 })
 
+ 
 
 const registerUser = asyncHandler(async function (req, res, next) {
 
@@ -176,3 +178,125 @@ const registerCustomers =asyncHandler( async (req, res) => {
 })
 
 export { registerUser, loginUser, signoutUser, registerCustomers }
+
+const registerTailor = asyncHandler(async (req, res, next) => {
+
+    const { firstName, middleName, lastName, profilePic, aadharNo, gender, localAddress, shopLocation,
+        experience, shopName, shopRegistrationNo, sellRawCloth
+    } = req.body
+
+
+
+
+    const avatarInfo = await uploadOnCloudinary(req.file.path);
+
+    let localAddressJson = []
+    const avatarUrl = avatarInfo?.url;
+    if (req.body.localAddress) {
+        if (typeof req.body.localAddress === "string") {
+            try {
+                localAddressJson = JSON.parse(req.body.localAddress);
+            } catch (e) {
+                console.error("Invalid localAddress JSON:", e);
+            }
+        } else {
+            localAddressJson = req.body.localAddress;
+        }
+    }
+
+
+    let sellRawClothBool;
+
+    if (typeof sellRawCloth === "string") {
+        sellRawClothBool = (sellRawCloth === "true");
+    } else {
+        sellRawClothBool = sellRawCloth;
+    }
+
+
+
+
+
+
+
+    if ([firstName, lastName, aadharNo, gender, localAddress, experience, shopName, sellRawCloth].some((elem) => elem == "")) {
+        throw new apiError(400, "Fields are must")
+    }
+
+
+
+    const tailorReg = await tailor.create({
+        firstName,
+        middleName,
+        lastName,
+        profilePic: avatarUrl,
+        aadharNo,
+        gender,
+        localAddress: localAddressJson,
+        shopLocation,
+        experience,
+        shopName,
+        shopRegistrationNo,
+        sellRawCloth: sellRawClothBool
+    })
+
+
+    return res.status(201).json(
+        new apiResponse(201, "Tailor registered Successfully!")
+    )
+
+
+
+})
+
+
+const refreshAccessToken = asyncHandler(async (req, res, next) => {
+    const incomingRefreshToken = await req.cookies.refreshToken || req.body.refreshToken;
+
+    if (!incomingRefreshToken) {
+        throw new apiError(401, "Unauthorized Access!");
+    }
+
+
+    try {
+        const decodedToken =  jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+        
+        
+        const user = await signUp.findById(decodedToken._id)
+        
+        if (!user) {
+            throw new apiError(401, "Invalid Refresh Token")
+        }
+        
+        if (incomingRefreshToken != user?.refreshToken) {
+            throw new apiError(401, "Refresh token is expired or used")
+        }
+        
+
+        const { accessToken, refreshToken } = await generateRefreshTokenAndAccessToken(user._id)
+        
+
+
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+        return res
+        .status(200)
+        .cookie("refreshToken", refreshToken, options)
+        .cookie("accessToken", accessToken, options)
+        .json(new apiResponse(
+                200,
+                { accessToken, refreshToken: refreshToken },
+                "Access token refreshed"
+            )
+        )
+    } catch (error) {
+
+        throw new apiError(401, error?.message || "Invalid refresh Token")
+    }
+
+
+})
+export { registerUser, loginUser, signoutUser, registerTailor, refreshAccessToken }
+>>>>>>> 0dae4880c3f0b18df027126d080967c44e2dc571
